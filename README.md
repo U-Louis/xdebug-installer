@@ -26,3 +26,5 @@ Automate x-debug install (usefull when I dont want to touch my dockerfiles)
 	]
 }
 ```
+
+xdebug version fixed to 3.2.2 (for up to 3.4 it struggles : https://bugs.xdebug.org/view.php?id=2246)
