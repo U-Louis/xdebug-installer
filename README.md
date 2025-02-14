@@ -17,7 +17,7 @@ Automate x-debug install (usefull when I dont want to touch my dockerfiles)
 			"request": "launch",
 			"port": 9003,
 			"pathMappings": {
-				"/symfony": "/Users/lurbani/dev/mediweb"
+				"/symfony": "/path/to/my/project"
 			},
 			"ignore": [
 				"**/vendor/**/*.php"
