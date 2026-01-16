@@ -14,22 +14,26 @@ docker exec -it $container_name apk add autoconf automake build-base && \
 docker exec -it $container_name apk add --update linux-headers && \
 echo "Dependencies installed successfully." && \
 
-# Step 3: Install Xdebug version 3.2.2 inside the Docker container
-echo "Step 3: Installing Xdebug version 3.2.2 inside the Docker container..."
-docker exec -it $container_name pecl install xdebug-3.2.2 && \
-echo "Xdebug 3.2.2 installed successfully." && \
+# Step 3: Install Xdebug (Version 3.4 or higher for PHP 8.4 support)
+echo "Step 3: Installing Xdebug for PHP 8.4..."
+docker exec -it $container_name pecl install xdebug && \
+echo "Xdebug installed successfully." && \
 
-# Step 4: Create or edit the 99-xdebug.ini file inside the Docker container
-echo "Step 4: Creating or editing the 99-xdebug.ini file inside the Docker container..."
-docker exec -it $container_name sh -c 'echo "zend_extension=xdebug" > /usr/local/etc/php/conf.d/99-xdebug.ini' && \
-docker exec -it $container_name sh -c 'echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/99-xdebug.ini' && \
-docker exec -it $container_name sh -c 'echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/99-xdebug.ini' && \
-docker exec -it $container_name sh -c 'echo "xdebug.discover_client_host=true" >> /usr/local/etc/php/conf.d/99-xdebug.ini' && \
-docker exec -it $container_name sh -c 'echo "xdebug.client_host=host.docker.internal" >> /usr/local/etc/php/conf.d/99-xdebug.ini' && \
-docker exec -it $container_name sh -c 'echo "xdebug.client_port=9003" >> /usr/local/etc/php/conf.d/99-xdebug.ini' && \
-docker exec -it $container_name sh -c 'echo "xdebug.log_level = 0" >> /usr/local/etc/php/conf.d/99-xdebug.ini' && \
+# Step 4: Enable and Configure Xdebug
+echo "Step 4: Configuring Xdebug..."
+# Use docker-php-ext-enable to handle the pathing automatically
+docker exec -it $container_name docker-php-ext-enable xdebug && \
 
-echo "Xdebug configuration updated successfully." && \
+# Append custom settings to the generated ini
+docker exec -it $container_name sh -c 'cat <<EOF >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+xdebug.mode=debug
+xdebug.start_with_request=yes
+xdebug.discover_client_host=true
+xdebug.client_host=host.docker.internal
+xdebug.client_port=9003
+xdebug.log_level=0
+EOF' && \
+echo "Xdebug configuration updated successfully."
 
 # Step 5: Restart PHP service inside the Docker container to apply changes
 echo "Step 5: Restarting PHP service inside the Docker container to apply changes..."
