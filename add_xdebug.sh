@@ -5,7 +5,7 @@ container_name="php"
 
 # Step 1: Update package manager inside the Docker container
 echo "Step 1: Updating package manager inside the Docker container..."
-docker exec -it $container_name apk update && \
+docker exec -u 0 -it $container_name sh -c "apk update && apk add --no-cache autoconf automake build-base linux-headers"
 echo "Package manager updated successfully." && \
 
 # Step 2: Install necessary dependencies inside the Docker container
